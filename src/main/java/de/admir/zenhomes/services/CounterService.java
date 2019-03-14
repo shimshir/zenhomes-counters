@@ -23,7 +23,7 @@ public class CounterService {
 	private final CounterAmountDao counterAmountDao;
 
 	public String createCounter(Counter counter) {
-		return counterDao.createCounter(counter);
+		return counterDao.insertCounter(counter);
 	}
 
 	public Optional<Counter> findCounterById(String id) {
@@ -39,13 +39,13 @@ public class CounterService {
 			);
 	}
 
-	public List<CounterReport> consumptionReport() {
-		long ts24HoursAgo = chronos.epochMilli() - 24 * 60 * 60 * 1000;
+	public List<CounterReport> consumptionReport(long durationInHours) {
+		long tsHoursAgo = chronos.epochMilli() - durationInHours * 60 * 60 * 1000;
 
 		return counterDao.findAll().stream().flatMap(counter ->
 			counterAmountDao.findByCounterId(counter.getId().get()).flatMap(counterAmounts ->
 				counterAmounts.stream()
-					.filter(counterAmount -> counterAmount.getTimestamp().get() >= ts24HoursAgo)
+					.filter(counterAmount -> counterAmount.getTimestamp().get() >= tsHoursAgo)
 					.findFirst()
 			)
 				.map(counterAmount -> new CounterReport(counter, counterAmount))

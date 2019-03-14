@@ -14,7 +14,7 @@ public class CounterDao {
 	private final Map<String, Counter> counters = new ConcurrentHashMap<>();
 	private final AtomicInteger idGenerator = new AtomicInteger(0);
 
-	public String createCounter(Counter counter) {
+	public String insertCounter(Counter counter) {
 		String id = String.valueOf(idGenerator.incrementAndGet());
 		counters.put(id, counter.withId(id));
 

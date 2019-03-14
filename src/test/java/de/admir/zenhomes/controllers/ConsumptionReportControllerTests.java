@@ -37,7 +37,7 @@ public class ConsumptionReportControllerTests {
 
 	@Test
 	public void GET_consumption_report_should_respond_with_an_empty_json_array_when_the_service_returns_an_empty_list() throws Exception {
-		when(counterService.consumptionReport()).thenReturn(Collections.emptyList());
+		when(counterService.consumptionReport(24)).thenReturn(Collections.emptyList());
 
 		mvc.perform(
 			get("/consumption-report")
@@ -55,7 +55,7 @@ public class ConsumptionReportControllerTests {
 			new CounterAmount("1", 123.45, ts)
 		);
 
-		when(counterService.consumptionReport()).thenReturn(Collections.singletonList(report));
+		when(counterService.consumptionReport(24)).thenReturn(Collections.singletonList(report));
 
 		mvc.perform(
 			get("/consumption-report")

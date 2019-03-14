@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ConsumptionReportController {
 	private final CounterService counterService;
 
 	@GetMapping
-	public List<CounterReport> getReport() {
-		return counterService.consumptionReport();
+	public List<CounterReport> getReport(@RequestParam(value = "duration", defaultValue = "24") long durationInHours) {
+		return counterService.consumptionReport(durationInHours);
 	}
 }
