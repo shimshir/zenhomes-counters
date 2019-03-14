@@ -4,12 +4,16 @@ import de.admir.zenhomes.daos.CounterAmountDao;
 import de.admir.zenhomes.daos.CounterDao;
 import de.admir.zenhomes.models.data.Counter;
 import de.admir.zenhomes.models.data.CounterAmount;
+import de.admir.zenhomes.models.data.CounterReport;
 import de.admir.zenhomes.time.Chronos;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -26,15 +30,26 @@ public class CounterService {
 		return counterDao.findCounterById(id);
 	}
 
-	public Optional<String> insertCounterAmount(String counterId, double amount) {
-		return counterDao.findCounterById(counterId)
+	public Optional<String> insertCounterAmount(CounterAmount counterAmount) {
+		return counterDao.findCounterById(counterAmount.getCounterId())
 			.map(counter ->
 				counterAmountDao.insertCounterAmount(
-					new CounterAmount()
-						.withCounterId(counterId)
-						.withAmount(amount)
-						.withTimestamp(chronos.epochMilli())
+					counterAmount.withTimestamp(chronos.epochMilli())
 				)
 			);
+	}
+
+	public List<CounterReport> consumptionReport() {
+		long ts24HoursAgo = chronos.epochMilli() - 24 * 60 * 60 * 1000;
+
+		return counterDao.findAll().stream().flatMap(counter ->
+			counterAmountDao.findByCounterId(counter.getId().get()).flatMap(counterAmounts ->
+				counterAmounts.stream()
+					.filter(counterAmount -> counterAmount.getTimestamp().get() >= ts24HoursAgo)
+					.findFirst()
+			)
+				.map(counterAmount -> new CounterReport(counter, counterAmount))
+				.map(Stream::of).orElseGet(Stream::empty)
+		).collect(Collectors.toList());
 	}
 }

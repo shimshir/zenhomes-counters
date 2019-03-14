@@ -1,5 +1,6 @@
 package de.admir.zenhomes.models.data;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class CounterAmount {
 		return getTimestamp().map(ts -> counterId + "-" + ts);
 	}
 
+	@JsonGetter
 	public Optional<Long> getTimestamp() {
 		return Optional.ofNullable(timestamp);
 	}

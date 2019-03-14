@@ -1,5 +1,6 @@
 package de.admir.zenhomes.models.data;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class Counter {
 	@NotEmpty
 	private String villageName;
 
+	@JsonGetter
 	public Optional<String> getId() {
 		return Optional.ofNullable(id);
 	}

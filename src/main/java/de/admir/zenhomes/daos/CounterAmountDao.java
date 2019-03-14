@@ -32,4 +32,9 @@ public class CounterAmountDao {
 
 		return generatedId;
 	}
+
+	public Optional<Collection<CounterAmount>> findByCounterId(String counterId) {
+		return Optional.ofNullable(counterAmounts.get(counterId))
+			.map(Map::values);
+	}
 }

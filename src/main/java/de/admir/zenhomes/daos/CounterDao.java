@@ -3,6 +3,7 @@ package de.admir.zenhomes.daos;
 import de.admir.zenhomes.models.data.Counter;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,5 +23,9 @@ public class CounterDao {
 
 	public Optional<Counter> findCounterById(String id) {
 		return Optional.ofNullable(counters.get(id));
+	}
+
+	public Collection<Counter> findAll() {
+		return counters.values();
 	}
 }
